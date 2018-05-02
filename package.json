@@ -1,0 +1,27 @@
+{
+  "name": "@neoblog/plugin-github-webhook",
+  "version": "1.0.0",
+  "description": "NeoBlog plugin to reload server when receive GitHub webhook.",
+  "main": "index.js",
+  "engines": {
+    "npm": ">=5.7.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rocka/neoblog-plugin-github-webhook.git"
+  },
+  "keywords": [
+    "neoblog",
+    "neoblog-plugin",
+    "webhook"
+  ],
+  "author": "rocka <i@rocka.me>",
+  "license": "MIT",
+  "peerDependencies": {
+    "@neoblog/neoblog": ">=0.2.4",
+    "koa-router": ">=7.4.0"
+  }
+}
