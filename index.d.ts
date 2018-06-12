@@ -1,10 +1,10 @@
-declare interface GitHubWebhookPluginOpt {
+declare interface GogsWebhookPluginOpt {
     /**
      * secret in webhook config. **NOT NULL**
      */
     secret: string;
     /**
-     * webhook POST pathname. default to `'/webhook/github'`
+     * webhook POST pathname. default to `'/webhook/gogs'`
      */
     path: string;
     /**
@@ -13,8 +13,8 @@ declare interface GitHubWebhookPluginOpt {
     localRef: string;
 }
 
-declare class GitHubWebhookPlugin {
-    constructor(opt: GitHubWebhookPluginOpt)
+declare class GogsWebhookPlugin {
+    constructor(opt: GogsWebhookPluginOpt)
 }
 
-export = GitHubWebhookPlugin;
+export = GogsWebhookPlugin;

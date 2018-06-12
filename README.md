@@ -1,6 +1,6 @@
-# GitHub Webhook Plugin for Neoblog
+# Gogs Webhook Plugin for Neoblog
 
-Reload server when receive GitHub webhook.
+Reload server when receive Gogs webhook.
 
 ## What does this plugin actually do
 
@@ -23,13 +23,13 @@ neoblog.reload();
 in NeoBlog `config.js`:
 
 ```js
-const GitHubWebhookPlugin = require('@neoblog/plugin-github-webhook');
+const GogsWebhookPlugin = require('@neoblog/plugin-gogs-webhook');
 
 module.exports = {
     // ...
     plugins: [
         // ...
-        new GitHubWebhookPlugin({
+        new GogsWebhookPlugin({
             secret: 'a-very-long-secret-that-should-be-generated',
             path: '/path/to/webhook',
             localRef: 'origin/master'
@@ -40,4 +40,4 @@ module.exports = {
 };
 ```
 
-then setup webhook in GitHub porject settings.
+then setup webhook in Gogs porject settings.

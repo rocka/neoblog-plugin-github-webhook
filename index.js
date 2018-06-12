@@ -7,18 +7,18 @@ const execAsync = util.promisify(exec);
 
 const KoaRouter = require('koa-router');
 
-class GitHubWebhookPlugin {
+class GogsWebhookPlugin {
     static get meta() {
         return {
-            name: 'github-webhook-plugin',
+            name: 'gogs-webhook-plugin',
             version: '0.1.0',
-            description: 'reload server when receive GitHub webhook.',
+            description: 'reload server when receive Gogs webhook.',
             author: 'rocka <i@rocka.me>'
         };
     }
 
     static log(...args) {
-        console.log('[GitHubWebhookPlugin]', ...args);
+        console.log('[GogsWebhookPlugin]', ...args);
     }
 
     /**
@@ -27,7 +27,7 @@ class GitHubWebhookPlugin {
      * @param {string} secret hmac secret
      * @param {string} method hmac method
      */
-    hash(ctx, secret = this.secret, method = 'sha1') {
+    hash(ctx, secret = this.secret, method = 'sha256') {
         return new Promise((resolve, reject) => {
             const text = [], digest = [];
             ctx.req.on('data', chunk => text.push(chunk.toString()));
@@ -39,24 +39,24 @@ class GitHubWebhookPlugin {
                         ctx.request.body = JSON.parse(rawBody);
                     } catch (err) {
                         ctx.request.body = {};
-                        GitHubWebhookPlugin.log('cannot parse JSON', text);
+                        GogsWebhookPlugin.log('cannot parse JSON', text);
                     }
                 }
             });
             const hmac = crypto.createHmac(method, secret);
             hmac.on('data', chunk => digest.push(chunk.toString('hex')));
-            hmac.on('end', () => resolve(`${method}=${digest.join('')}`));
+            hmac.on('end', () => resolve(digest.join('')));
             hmac.on('error', reject);
             ctx.req.pipe(hmac);
         });
     }
 
     async preMiddleware(ctx, next) {
-        ctx.state.evt = ctx.get('X-GitHub-Event');
-        ctx.state.sig = ctx.get('X-Hub-Signature');
-        GitHubWebhookPlugin.log(ctx.method, ctx.path, ctx.state.evt);
+        ctx.state.evt = ctx.get('X-Gogs-Event');
+        ctx.state.sig = ctx.get('X-Gogs-Signature');
+        GogsWebhookPlugin.log(ctx.method, ctx.path, ctx.state.evt);
         try {
-            if (!ctx.state.sig) ctx.throw(400, 'Please set `secret` in github webhook');
+            if (!ctx.state.sig) ctx.throw(400, 'Please set `secret` in Gogs webhook');
             const hash = await this.hash(ctx);
             if (ctx.state.sig !== hash) ctx.throw(403, 'wrong hash');
             await next();
@@ -85,9 +85,9 @@ class GitHubWebhookPlugin {
         this.syncRepo();
     }
 
-    constructor({ secret, path = '/webhook/github', localRef = 'origin/master' }) {
+    constructor({ secret, path = '/webhook/gogs', localRef = 'origin/master' }) {
         if (typeof secret !== 'string') {
-            throw new Error('[GitHubWebhookPlugin] secret must be string.');
+            throw new Error('[GogsWebhookPlugin] secret must be string.');
         }
         this.server = null;
         this.secret = secret;
@@ -105,7 +105,7 @@ class GitHubWebhookPlugin {
             middleware.call(this, ctx, next);
         });
         this.routes = router.routes();
-        Object.assign(this, GitHubWebhookPlugin.meta);
+        Object.assign(this, GogsWebhookPlugin.meta);
     }
 
     install(blogServer) {
@@ -113,13 +113,13 @@ class GitHubWebhookPlugin {
     }
 
     async syncRepo() {
-        GitHubWebhookPlugin.log('syncing repo ...');
+        GogsWebhookPlugin.log('syncing repo ...');
         await execAsync('git fetch --all');
         await execAsync(`git reset --hard ${this.localRef}`);
         await execAsync('npm ci');
-        GitHubWebhookPlugin.log('reloading config ...');
+        GogsWebhookPlugin.log('reloading config ...');
         await this.server.reload();
     }
 }
 
-module.exports = GitHubWebhookPlugin; 
+module.exports = GogsWebhookPlugin; 

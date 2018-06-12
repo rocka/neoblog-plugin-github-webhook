@@ -1,7 +1,7 @@
 {
-  "name": "@neoblog/plugin-github-webhook",
+  "name": "@neoblog/plugin-gogs-webhook",
   "version": "1.0.0",
-  "description": "NeoBlog plugin to reload server when receive GitHub webhook.",
+  "description": "NeoBlog plugin to reload server when receive Gogs webhook.",
   "main": "index.js",
   "engines": {
     "npm": ">=5.7.0"
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/rocka/neoblog-plugin-github-webhook.git"
+    "url": "https://github.com/rocka/neoblog-plugin-github-webhook.git#gogs"
   },
   "keywords": [
     "neoblog",
