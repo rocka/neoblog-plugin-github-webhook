@@ -2,7 +2,7 @@
 
 Reload server when receive GitHub webhook.
 
-## What does this plugin actually does
+## What does this plugin actually do
 
 1. sync the repo and install dependencies
 
